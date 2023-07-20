@@ -28,7 +28,7 @@ export default function Home() {
     const url = "https://api.openai.com/v1/chat/completions";
     const headers = {
       "Content-type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      Authorization: "Bearer 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",
     };
     // Data to be sent in the API request
     const data = {
