@@ -22,7 +22,7 @@ const ChatMessage = ({ type, message, isLoading }) => {
       {/* Conditional rendering to show or hide the message content based on isLoading and type */}
       <div
         className={`${
-          type === "user" ? "bg-purple-500" : "bg-gray-800"
+          type === "user" ? "bg-purple-500" : "bg-gray-800 "
         } rounded-lg p-4 text-white max-w-sm`}
       >
         {/* Show the message content when it's not loading or when it's a user message */}
