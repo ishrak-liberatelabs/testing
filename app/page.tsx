@@ -1,8 +1,7 @@
 "use client";
 // Import necessary libraries and components
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import TypingAnimation from "./Components/TypingAnimation";
+
 import ChatMessage from "./ChatMessage ";
 
 // Define the main functional component Home
@@ -28,42 +27,24 @@ export default function Home() {
   };
 
   // Function to send user's message to the bot
-  const sendMessage = (message: any) => {
-    // API endpoint and headers for OpenAI chat completions
-    console.log(process.env.OPENAI_API_KEY);
-    const url = "https://api.openai.com/v1/chat/completions";
-    const headers = {
-      "Content-type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-    };
-    // Data to be sent in the API request
-    const data = {
-      model: "gpt-3.5-turbo-0613  ",
-      messages: [{ role: "user", content: message }],
-    };
-
+  const sendMessage = async (message: any) => {
     // Set loading state to true to indicate API call in progress
     setIsLoading(true);
-
     // Make a POST request to the OpenAI API to get the bot's response
-    axios
-      .post(url, data, { headers: headers })
-      .then((response) => {
-        console.log(response);
-        // Handle the bot's response
-        handleBotResponse(response);
-      })
-      .catch((error) => {
-        // Set loading state to false on error
-        setIsLoading(false);
-        console.log(error);
-      });
+    const msg = await fetch("/api/chat", {
+      method: "POST",
+      body: JSON.stringify(message),
+    });
+
+    let messageData = await msg.json();
+    handleBotResponse(messageData);
+    setIsLoading(false);
   };
 
   // Function to handle the bot's response and show it as streaming text
   const handleBotResponse = (response: any) => {
     // Extract the bot's response from the API response
-    const botMessage = response.data.choices[0].message.content;
+    const botMessage = response;
 
     // Check if the bot's response is empty
     if (botMessage.trim() === "") {
