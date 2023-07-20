@@ -1,4 +1,4 @@
-"use client"
+"use client";
 // Import necessary libraries and components
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -9,30 +9,36 @@ import ChatMessage from "./ChatMessage ";
 export default function Home() {
   // State variables for input value, chat log, and loading status
   const [inputValue, setInputValue] = useState("");
-  const [chatLog, setChatLog] = useState<{ type: string; message: string }[]>([]);
+  const [chatLog, setChatLog] = useState<{ type: string; message: string }[]>(
+    []
+  );
   const [isLoading, setIsLoading] = useState(false);
 
   // Function to handle form submission
   const handleSubmit = (event: any) => {
     event.preventDefault();
     // Add the user's message to the chat log
-    setChatLog((prevChatLog) => [...prevChatLog, { type: "user", message: inputValue }]);
+    setChatLog((prevChatLog) => [
+      ...prevChatLog,
+      { type: "user", message: inputValue },
+    ]);
     // Send the user's message to the bot
     sendMessage(inputValue);
     setInputValue("");
   };
 
   // Function to send user's message to the bot
-  const sendMessage = (message:any) => {
+  const sendMessage = (message: any) => {
     // API endpoint and headers for OpenAI chat completions
+    console.log(process.env.OPENAI_API_KEY);
     const url = "https://api.openai.com/v1/chat/completions";
     const headers = {
       "Content-type": "application/json",
-      Authorization: "Bearer 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",
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
     };
     // Data to be sent in the API request
     const data = {
-      model: "gpt-3.5-turbo-0301",
+      model: "gpt-3.5-turbo-0613  ",
       messages: [{ role: "user", content: message }],
     };
 
@@ -66,7 +72,9 @@ export default function Home() {
     }
 
     // Check if the same message is already present in the chat log
-    const isMessageAlreadyExists = chatLog.some((message) => message.type === "bot" && message.message === botMessage);
+    const isMessageAlreadyExists = chatLog.some(
+      (message) => message.type === "bot" && message.message === botMessage
+    );
 
     // If the message does not already exist, add it to the chat log
     if (!isMessageAlreadyExists) {
@@ -101,7 +109,9 @@ export default function Home() {
     if (isLoading && chatLog.length > 0) {
       const lastMessage = chatLog[chatLog.length - 1];
       if (lastMessage.type === "bot") {
-        handleBotResponse({ data: { choices: [{ message: { content: lastMessage.message } }] } });
+        handleBotResponse({
+          data: { choices: [{ message: { content: lastMessage.message } }] },
+        });
       }
     }
   }, [chatLog, isLoading]);
@@ -112,21 +122,39 @@ export default function Home() {
       <div className="container mx-auto max-w-[700px]">
         <div className="flex flex-col h-screen bg-gray-900">
           {/* ChatGPT heading */}
-          <h1 className="bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text text-center py-3 font-bold text-6xl">LabGPT</h1>
+          <h1 className="bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text text-center py-3 font-bold text-6xl">
+            LabGPT
+          </h1>
           <div className="flex-grow p-6 overflow-y-scroll overflow-x-hidden scrollbar-hide">
             <div className="flex flex-col space-y-4">
               {/* Map through chatLog and render ChatMessage component for each message */}
               {chatLog.map((message, index) => (
-                <ChatMessage key={index} type={message.type} message={message.message} isLoading={isLoading && index === chatLog.length - 1} />
+                <ChatMessage
+                  key={index}
+                  type={message.type}
+                  message={message.message}
+                  isLoading={isLoading && index === chatLog.length - 1}
+                />
               ))}
             </div>
           </div>
           <form onSubmit={handleSubmit} className="flex-none p-6">
             <div className="flex rounded-lg border border-gray-700 bg-gray-800">
               {/* Input field for user to type a message */}
-              <input type="text" className="flex-grow px-4 py-2 bg-transparent text-white focus:outline-none" placeholder="Type your message..." value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+              <input
+                type="text"
+                className="flex-grow px-4 py-2 bg-transparent text-white focus:outline-none"
+                placeholder="Type your message..."
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+              />
               {/* Button to send the user's message */}
-              <button type="submit" className="bg-purple-500 rounded-lg px-4 py-2 text-white font-semibold focus:outline-none hover:bg-purple-600 transition-colors duration-300">Send</button>
+              <button
+                type="submit"
+                className="bg-purple-500 rounded-lg px-4 py-2 text-white font-semibold focus:outline-none hover:bg-purple-600 transition-colors duration-300"
+              >
+                Send
+              </button>
             </div>
           </form>
         </div>
