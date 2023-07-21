@@ -13,6 +13,47 @@ export default function Home() {
   );
   const [isLoading, setIsLoading] = useState(false);
 
+
+
+  // State variable for the selected file
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  // Function to handle file input changes
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    setSelectedFile(file);
+  };
+
+  // Function to handle drag and drop events
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
+  const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0] || null;
+    setSelectedFile(file);
+    console.log(file);
+  };
+
+
+  // Function to handle the file input click
+  const handleFileInputClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  // Ref for the file input element
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+
   // Function to handle form submission
   const handleSubmit = (event: any) => {
     event.preventDefault();
@@ -118,6 +159,35 @@ export default function Home() {
                 />
               ))}
             </div>
+          </div>
+          <div
+            className="flex-none p-6 border border-dashed border-gray-700 rounded-lg cursor-pointer text-white" // Add "text-white" class
+            onDragOver={handleDragOver}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={handleFileInputClick} // Add this line to trigger file input click
+          >
+            {selectedFile ? (
+              <div>
+                <p>Selected File: {selectedFile.name}</p>
+                <button
+                  type="button"
+                  onClick={() => setSelectedFile(null)}
+                  className="bg-red-500 rounded-lg px-4 py-2 text-white font-semibold focus:outline-none hover:bg-red-600 transition-colors duration-300"
+                >
+                  Clear File
+                </button>
+              </div>
+            ) : (
+              <p>Drag and Drop or Click to Upload a File</p>
+            )}
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
           </div>
           <form onSubmit={handleSubmit} className="flex-none p-6">
             <div className="flex rounded-lg border border-gray-700 bg-gray-800">
